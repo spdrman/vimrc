@@ -35,13 +35,13 @@ function Vimdev()
 endfunction
 
 function Gonuts()
-    "":exec "ConqueTermSplit go run ".expand('%')
-    "":execute "resize 10"
-    "":execute "wincmd j"
-    :exec "Shell go run ".expand('%')
-    :exec "resize 10"
-    :exec "wincmd k"
-    :exec "wincmd l"
+    :exec "ConqueTermSplit go run ".expand('%')
+    :execute "resize 10"
+    :execute "wincmd j"
+    "":exec "Shell go run ".expand('%')
+    "":exec "resize 10"
+    "":exec "wincmd k"
+    "":exec "wincmd l"
 endfunction
 
 
