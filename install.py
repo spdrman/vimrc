@@ -3,6 +3,22 @@
 import os
 import subprocess
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+    def disable(self):
+        self.HEADER = ''
+        self.OKBLUE = ''
+        self.OKGREEN = ''
+        self.WARNING = ''
+        self.FAIL = ''
+        self.ENDC = ''
+
 def which(name):
     try:
         devnull = open(os.devnull)
@@ -16,15 +32,18 @@ def ex(cmd):
     os.system(cmd)
 
 def print_cyan(text):
-    os.system("echo \e[36m#{0}\e[0m".format(text))
+    os.system('echo %s %s %s' % (bcolors.HEADER, text, bcolors.ENDC))
+    #os.system("echo \e[36m#{0}\e[0m".format(text))
 
 
 def print_green(text):
-    os.system("echo \e[32m#{0}\e[0m".format(text))
+    os.system('echo %s %s %s' % (bcolors.OKGREEN, text, bcolors.ENDC))
+    #os.system("echo \e[32m#{0}\e[0m".format(text))
 
 
 def print_red(text):
-    os.system("echo \e[31m#{0}\e[0m".format(text))
+    os.system('echo %s %s %s' % (bcolors.FAIL, text, bcolors.ENDC))
+    #os.system("echo \e[31m#{0}\e[0m".format(text))
 
 
 def path(filepath):
