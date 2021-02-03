@@ -16,33 +16,35 @@ def ex(cmd):
     os.system(cmd)
 
 def print_cyan(text):
-    os.system("\e[36m#{text}\e[0m")
+    os.system("echo \e[36m#{0}\e[0m".format(text))
 
 
 def print_green(text):
-    os.system("\e[32m#{text}\e[0m")
+    os.system("echo \e[32m#{0}\e[0m".format(text))
 
 
 def print_red(text):
-    os.system("\e[31m#{text}\e[0m")
+    os.system("echo \e[31m#{0}\e[0m".format(text))
+
 
 def path(filepath):
     os.path.abspath(filepath)
-    
+
+
 def exists(p):
     t = path(p)
-    if path.exists(d):
-        return true
+    if os.path.exists(p):
+        return True
     else:
-        return false
+        return False
 
 def contains_text(text, file):
     if exists(file):
         with open(path(file)) as myfile:
             if text in myfile.read():
-                return true
+                return True
             else:
-                return false
+                return False
             
             
 print_cyan("Checking if vim-plug exists...")
@@ -57,7 +59,7 @@ if exists("/usr/local/Cellar/the_silver_searcher/"):
     print_green("You already have ag, awesome!")
 else:
     print_red("Nope, installing ag")
-    ex("brew install the_silver_searcher"
+    ex("brew install the_silver_searcher")
 
 print_cyan("Checking if zsh is installed")
 if not which(zsh):
@@ -81,6 +83,6 @@ ex("cp .gitconfig ~/.gitconfig")
 print_cyan("Copying .zsh-aliases to ~/.zsh-aliases")
 ex("cp .zsh-aliases ~/.zsh-aliases")
 
-if contains_text("zsh-aliases", "~/.zshrc")
+if contains_text("zsh-aliases", "~/.zshrc"):
     print_cyan("Adding .zsh-aliases to ~/.zshrc")
     ex("echo 'source ~/.zsh-aliases' >> ~/.zshrc")
