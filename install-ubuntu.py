@@ -3,6 +3,7 @@
 import os
 import subprocess
 import errno
+from shutil import which
 
 class bcolors:
     HEADER = '\033[95m'
@@ -20,14 +21,8 @@ class bcolors:
         self.FAIL = ''
         self.ENDC = ''
 
-def which(name):
-    try:
-        devnull = open(os.devnull)
-        subprocess.Popen([name], stdout=devnull, stderr=devnull).communicate()
-    except OSError as e:
-        if e.errno == errno.ENOENT:
-            return False
-    return True
+def wch(name):
+    return which(name) is not None
 
 def ex(cmd):
     os.system(cmd)
@@ -65,8 +60,9 @@ def contains_text(text, file):
                 return True
             else:
                 return False
-            
-            
+
+print_cyan("Updating apt before we start trying to install apps from it...")
+ex("sudo apt-get update")
 print_cyan("Checking if vim-plug exists...")
 if exists("~/.vim/autoload/plug.vim"):
     print_green("You already have vim-plug, awesome!")
@@ -79,10 +75,10 @@ if exists("/usr/local/Cellar/the_silver_searcher/"):
     print_green("You already have ag, awesome!")
 else:
     print_red("Nope, installing ag")
-    ex("brew install the_silver_searcher")
+    ex("sudo apt-get install silversearcher-ag")
 
 print_cyan("Checking if zsh is installed")
-if not which("zsh"):
+if not wch("zsh"):
     print_red("Nope, installing zsh")
     ex("sudo apt-get install zsh")
     ex("sh -c '$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)'")
