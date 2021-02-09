@@ -3,6 +3,7 @@
 import os
 import subprocess
 import errno
+from shutil import which
 
 class bcolors:
     HEADER = '\033[95m'
@@ -20,14 +21,8 @@ class bcolors:
         self.FAIL = ''
         self.ENDC = ''
 
-def which(name):
-    try:
-        devnull = open(os.devnull)
-        subprocess.Popen([name], stdout=devnull, stderr=devnull).communicate()
-    except OSError as e:
-        if e.errno == errno.ENOENT:
-            return False
-    return True
+def wch(name):
+    return which(name) is not None
 
 def ex(cmd):
     os.system(cmd)
@@ -65,8 +60,12 @@ def contains_text(text, file):
                 return True
             else:
                 return False
-            
-            
+
+# Update APT
+print_cyan("Updating apt before we start trying to install apps from it...")
+ex("sudo apt-get update")
+
+# vim-plug
 print_cyan("Checking if vim-plug exists...")
 if exists("~/.vim/autoload/plug.vim"):
     print_green("You already have vim-plug, awesome!")
@@ -74,21 +73,15 @@ else:
     print_red("Nope, installing vim-plug")
     ex("curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
 
+# Ag
 print_cyan("Checking if ag exists...")
 if exists("/usr/local/Cellar/the_silver_searcher/"):
     print_green("You already have ag, awesome!")
 else:
     print_red("Nope, installing ag")
-    ex("brew install the_silver_searcher")
+    ex("sudo apt-get install silversearcher-ag")
 
-print_cyan("Checking if zsh is installed")
-if not which("zsh"):
-    print_red("Nope, installing zsh")
-    ex("sudo apt-get install zsh")
-    ex("sh -c '$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)'")
-else:
-    print_green("You already have zsh, awesome!")
-
+# Honukai Theme
 print_cyan("Checking if honukai theme is installed")
 if exists("~/.oh-my-zsh/themes/honukai.zsh-theme"):
     print_green("You already have honukai theme, awesome!")
@@ -96,13 +89,18 @@ else:
     print_red("Nope, installing honukai theme")
     ex("wget -P ~/.oh-my-zsh/themes 'https://raw.githubusercontent.com/oskarkrawczyk/honukai-iterm/master/honukai.zsh-theme'")
 
-print_cyan("Copying .vimrc to ~/.vimrc")
-ex("cp .vimrc ~/.vimrc")
-print_cyan("Copying .gitconfig to ~/.gitconfig")
-ex("cp .gitconfig ~/.gitconfig")
-print_cyan("Copying .zsh-aliases to ~/.zsh-aliases")
-ex("cp .zsh-aliases ~/.zsh-aliases")
+# NeoVim
+print_cyan("Checking if NeoVim is installed...")
+if wch("neovim"):
+    print_green("NeoVim is already installed")
+else:
+    print_red("Nope, installing Neovim")
+    ex("sudo apt-get install neovim")
 
-if contains_text("zsh-aliases", "~/.zshrc"):
-    print_cyan("Adding .zsh-aliases to ~/.zshrc")
-    ex("echo 'source ~/.zsh-aliases' >> ~/.zshrc")
+# Vim-Plug
+print_cyan("Checking if vim-plug exists...")
+if exists("~/.vim/autoload/plug.vim"):
+    print_green("You already have vim-plug installed, awesome!")
+else:
+    print_red("Nope, installing vim-plug")
+    ex("curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")

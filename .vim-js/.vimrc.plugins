@@ -1,0 +1,14 @@
+Plug 'morhetz/gruvbox'
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'pangloss/vim-javascript'    			" JavaScript support
+Plug 'maxmellon/vim-jsx-pretty'   			" JS and JSX syntax
+Plug 'jparise/vim-graphql' 				" GraphQL
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'preservim/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'airblade/vim-gitgutter'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'frazrepo/vim-rainbow'
