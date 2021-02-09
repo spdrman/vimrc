@@ -1,0 +1,32 @@
+" Indentation 
+set autoindent
+set cindent
+set smartindent
+
+" Enable folding with the z key
+nmap z za
+
+" Disable all bells and whistles
+set noerrorbells visualbell t_vb=  
+
+" Tab Options 
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2 " Number of spaces a tab counts when editing
+set expandtab
+
+" Delete empty space from the end of lines on every save 
+autocmd BufWritePre * :%s/\s\+$//e 
+
+" Set default encoding to utf-8 
+set encoding=utf-8 
+set termencoding=utf-8
+
+" Searching defaults
+set ignorecase " Ignore case when searching
+set smartcase  " When searching try to be smart about cases
+set nohlsearch " Don't highlight search term
+set incsearch  " Jumping search
+
+" Always show the status line
+set laststatus=2
