@@ -12,3 +12,5 @@ source ~/vimrc/.vim-js/.vimrc.local
 
 source ~/vimrc/.vim-rs/.vimrc.rust
 source ~/vimrc/.vim-rs/.vimrc.local
+
+source ~/vimrc/.vimrc.local

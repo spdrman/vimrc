@@ -1,0 +1,5 @@
+" Ale syntax checking
+let g:ale_rust_cargo_use_check = 1
+" use Ctrl-k and Ctrl-j to jump up and down between errors
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
