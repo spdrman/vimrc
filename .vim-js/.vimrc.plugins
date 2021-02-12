@@ -3,7 +3,6 @@ Plug 'HerringtonDarkholme/yats.vim'
 Plug 'pangloss/vim-javascript'    			" JavaScript support
 Plug 'maxmellon/vim-jsx-pretty'   			" JS and JSX syntax
 Plug 'jparise/vim-graphql' 				" GraphQL
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'

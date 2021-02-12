@@ -1,3 +1,4 @@
 Plug 'rust-lang/rust.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'w0rp/ale'
+Plug 'racer-rust/vim-racer'

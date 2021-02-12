@@ -18,7 +18,7 @@ map <c-h> <c-w>h
 " GruvBox Colorscheme Plugin
 colorscheme gruvbox
 set cursorline
-hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white 
+hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white
 
 let g:gruvbox_number_column='bg1'
 
@@ -27,7 +27,7 @@ let g:gruvbox_number_column='bg1'
 set background=dark    " Setting dark mode
 
 " COC vimrc config
-source ~/vimrc/.vim-js/.vimrc.plugins.coc
+"source ~/vimrc/.vim-js/.vimrc.plugins.coc
 
 
 " NERDTree config

@@ -128,3 +128,23 @@ nmap <silent> <leader>F <ESC>:NERDTreeToggle<CR>
 
 set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
 
+"YCM auto pop-up
+autocmd CursorMovedI
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
+
+" Trigger configuration. Do not use <tab> if you use YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<S-t>"
+let g:UltiSnipsJumpForwardTrigger="<S-f>"
+let g:UltiSnipsJumpBackwardTrigger="<S-b>"
+
+" Neocomplete
+let g:deoplete#enable_at_startup = 1
+call deoplete#custom#option({
+      \ 'auto_preview': v:true,
+      \ 'camel_case': v:true,
+      \ 'nofile_complete_filetypes': ['denite-filter', 'zsh'],
+      \ 'num_processes': 4,
+      \ 'refresh_always': v:false,
+      \ 'refresh_backspace': v:false,
+      \ 'skip_multibyte': v:true,
+      \ })
