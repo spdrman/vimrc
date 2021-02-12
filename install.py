@@ -104,3 +104,19 @@ if exists("~/.vim/autoload/plug.vim"):
 else:
     print_red("Nope, installing vim-plug")
     ex("curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
+
+# Install link to vimrc
+print_cyan("Backing up your .vimrc file and making symlink to the one in this package")
+ex("ln -s ~/vimrc/.vimrc ~/.vimrc")
+
+# Install YouCompleteMe
+pring_cyan("Install all vim plugins")
+ex("vim -E -s -u "$HOME/.vimrc" +PlugInstall +qall")
+
+# Install YouCompleteMe
+ex("sudo apt install build-essential cmake vim-nox python3-dev")
+ex("sudo apt install mono-complete golang nodejs default-jdk npm")
+ex("python3 ~/.vim/bundle/YouCompleteMe/install.py --rust-completer --js-completer --go-completer")
+
+# All done
+print_green("All done!")
