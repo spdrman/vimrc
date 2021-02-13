@@ -111,7 +111,7 @@ ex("ln -s ~/vimrc/.vimrc ~/.vimrc")
 
 # Install YouCompleteMe
 pring_cyan("Install all vim plugins")
-ex("vim -E -s -u "$HOME/.vimrc" +PlugInstall +qall")
+ex("vim -E -s -u '$HOME/.vimrc' +PlugInstall +qall")
 
 # Install YouCompleteMe
 ex("sudo apt install build-essential cmake vim-nox python3-dev")
