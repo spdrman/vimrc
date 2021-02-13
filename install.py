@@ -110,7 +110,7 @@ print_cyan("Backing up your .vimrc file and making symlink to the one in this pa
 ex("ln -s ~/vimrc/.vimrc ~/.vimrc")
 
 # Install YouCompleteMe
-pring_cyan("Install all vim plugins")
+print_cyan("Install all vim plugins")
 ex("vim -E -s -u '$HOME/.vimrc' +PlugInstall +qall")
 
 # Install YouCompleteMe
