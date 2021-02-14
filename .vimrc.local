@@ -148,3 +148,6 @@ call deoplete#custom#option({
       \ 'refresh_backspace': v:false,
       \ 'skip_multibyte': v:true,
       \ })
+
+" Auto open tagbar
+autocmd FileType python,c,cpp,rust,go,javascript,typescript,jsx TagbarOpen

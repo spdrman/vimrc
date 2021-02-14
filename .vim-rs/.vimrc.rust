@@ -18,3 +18,14 @@ augroup Racer
     autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
     autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
 augroup END
+
+"YCM Specific Rust Config
+let g:ycm_language_server =
+      \ [
+      \   {
+      \     'name': 'rust',
+      \     'cmdline': ['rust-analyzer'],
+      \     'filetypes': ['rust'],
+      \     'project_root_files': ['Cargo.toml']
+      \   }
+      \ ]
