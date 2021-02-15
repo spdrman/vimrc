@@ -67,7 +67,7 @@ unset color_prompt force_color_prompt
 case "$TERM" in
 xterm*|rxvt*)
  	PS1="\[\e[1;30m\][\[\e[1;34m\]\u@\H\[\e[1;30m\]:\[\e[0;37m\]\${SSH_TTY} \[\e[0;32m\]+\${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\W\[\e[0;37m\] ➜ "
-    
+
 	#PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
     ;;
 *)
@@ -81,16 +81,20 @@ if [ -x /usr/bin/dircolors ]; then
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
-    #alias grep='grep --color=auto'
-    #alias fgrep='fgrep --color=auto'
-    #alias egrep='egrep --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 fi
 
 # some more ls aliases
-alias ll='ls -l'
-alias la='ls -la'
+alias ll='ls -alF'
+alias la='ls -A'
 alias l='ls -CF'
 alias ls='ls --color=tty'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -134,6 +138,6 @@ export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin
 
 export SUDO_PROMPT='0--]=========>'
 
-export ANDROID_HOME=$HOME/Android/Sdk
-export PATH=$PATH:$ANDROID_HOME/tools
-#export PATH=$PATH:$ANDROID_HOME/platform-tools
+source "$HOME/.cargo/env"
+
+export RUS_SRC_PAH=$(rustc --print sysroot)/lib/rustlib/src/rust/library
