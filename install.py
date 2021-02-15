@@ -118,5 +118,8 @@ ex("sudo apt install build-essential cmake vim-nox python3-dev")
 ex("sudo apt install mono-complete golang nodejs default-jdk npm")
 ex("python3 ~/.vim/bundle/YouCompleteMe/install.py --rust-completer --js-completer --go-completer")
 
+# Copy ctags info
+ex("ln -s ~/vimrc/.ctags ~/.ctags")
+
 # All done
 print_green("All done!")
