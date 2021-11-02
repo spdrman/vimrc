@@ -97,14 +97,6 @@ else:
     print_red("Nope, installing Neovim")
     ex("sudo apt-get install neovim")
 
-# Vim-Plug
-print_cyan("Checking if vim-plug exists...")
-if exists("~/.vim/autoload/plug.vim"):
-    print_green("You already have vim-plug installed, awesome!")
-else:
-    print_red("Nope, installing vim-plug")
-    ex("curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
-
 # Install link to vimrc
 print_cyan("Backing up your .vimrc file and making symlink to the one in this package")
 ex("ln -s ~/vimrc/.vimrc ~/.vimrc")
