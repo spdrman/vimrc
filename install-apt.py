@@ -101,7 +101,7 @@ else:
 print_cyan("Backing up your .vimrc file and making symlink to the one in this package")
 ex("ln -s ~/vimrc/.vimrc ~/.vimrc")
 
-# Install YouCompleteMe
+# Install all plugins in the .vim.plugins file
 print_cyan("Install all vim plugins")
 ex("vim -E -s -u '$HOME/.vimrc' +PlugInstall +qall")
 
