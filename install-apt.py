@@ -106,8 +106,8 @@ print_cyan("Install all vim plugins")
 ex("vim -E -s -u '$HOME/.vimrc' +PlugInstall +qall")
 
 # Install YouCompleteMe
-ex("sudo apt install build-essential cmake vim-nox python3-dev")
-ex("sudo apt install mono-complete golang nodejs default-jdk npm")
+ex("sudo apt-get install build-essential cmake vim-nox python3-dev")
+ex("sudo apt-get install mono-complete golang nodejs default-jdk npm")
 ex("python3 ~/.vim/bundle/YouCompleteMe/install.py --rust-completer --js-completer --go-completer")
 
 # Copy ctags info
