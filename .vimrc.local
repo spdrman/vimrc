@@ -15,9 +15,9 @@ nmap z za
 set noerrorbells visualbell t_vb=
 
 " Tab Options
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4 " Number of spaces a tab counts when editing
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2 " Number of spaces a tab counts when editing
 set expandtab
 
 " Delete empty space from the end of lines on every save
@@ -26,6 +26,11 @@ autocmd BufWritePre * :%s/\s\+$//e
 " Set default encoding to utf-8
 set encoding=utf-8
 set termencoding=utf-8
+
+" Set default font
+" NOTE: vim terminal uses the font that your terminal is set to use
+" terminal/console vim font cannot be customized here
+set guifont=Source\ Code\ Pro\ 11
 
 " Always show the status line
 set laststatus=2

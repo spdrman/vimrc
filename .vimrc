@@ -2,7 +2,7 @@
 call plug#begin()
   source ~/vimrc/.vimrc.plugins
 	source ~/vimrc/.vim-js/.vimrc.plugins  	"javascript plugins for React and Typescript
-	source ~/vimrc/.vim-rs/.vimrc.plugins	"rust plugins
+	source ~/vimrc/.vim-rs/.vimrc.plugins	  "rust plugins
 
 " All of your Plugins must be added before the following line
 call plug#end()              " required
