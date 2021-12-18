@@ -2,3 +2,4 @@ Plug 'HerringtonDarkholme/yats.vim'     " typescript support
 Plug 'pangloss/vim-javascript'    			" JavaScript support
 Plug 'maxmellon/vim-jsx-pretty'   			" JS and JSX syntax
 Plug 'jparise/vim-graphql' 				      " GraphQL
+Plug 'hushicai/tagbar-javascript.vim'   " tagbar support for js & ts

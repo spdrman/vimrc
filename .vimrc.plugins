@@ -14,3 +14,4 @@ Plug 'tpope/vim-fugitive'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'frazrepo/vim-rainbow'
 Plug 'morhetz/gruvbox'
+Plug 'jistr/vim-nerdtree-tabs'  " no longer maintained

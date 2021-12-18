@@ -88,6 +88,10 @@ set lazyredraw
 set expandtab
 set smarttab
 
+" Cycling through tabs
+nnoremap tt :tabnext<CR>
+nnoremap TT :tabprev<CR>
+
 " nowrap
 set nowrap
 
@@ -112,6 +116,18 @@ augroup END
 
 " Close nerdtree after a file is selected
 let NERDTreeQuitOnOpen = 1
+
+" Make nerdtree width 35 on open
+let NERDTreeWinSize=35
+
+" Open NERDTree in every tab file
+autocmd BufWinEnter * NERDTreeTabsOpen
+
+" Open NERDTree highlighted file in new tab
+let NERDTreeMapOpenInTab='<TAB>'
+autocmd TabEnter * nmap <F3> :NERDTreeTabsOpen<CR>
+autocmd TabEnter * imap <F3> <Esc>:NERDTreeTabsOpen<CR>
+
 
 function! IsNERDTreeOpen()
   return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
