@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from sys import platform
 import subprocess
 import errno
 from shutil import which
@@ -110,6 +111,14 @@ def install(name, install_cmd=None, path=None, brew=False):
             ex('brew install ' + name)
         else:
             print_green("You already have " + name + ", skipping...")
+    elif brew is False:
+        installed = bool(ex("if apt list '" + name  + "' > /dev/null; then echo 'True'; else echo 'False'; fi").strip('\n'))
+
+        if not installed:
+            print_red(name + " is not installed on your system, installing...")
+            ex('sudo apt install ' + name)
+        else:
+            print_green("You already have " + name + ", skipping...")
     else:
         raise Exception("ERROR 1000: install_cmd and path, or name and brew=True not set for " + name)
 
@@ -117,6 +126,19 @@ def install(name, install_cmd=None, path=None, brew=False):
 
 
 #--------------------------------------------------------------------------------------------------------------------------
+# Check if in OSX or Linux
+ostype = "NONE"
+IS_OSX = False
+
+if platform == "linux" or platform == "linux2":
+    ostype = "linux"
+elif platform == "darwin":
+    ostype = "osx"
+    IS_OSX = True
+elif platform == "win32":
+    ostype = "windows"
+
+
 # Checking current environment $SHELL
 sh = os.path.basename(os.environ['SHELL'])
 if sh is not None:
@@ -133,11 +155,13 @@ else:
     raise Exception("ERROR 1002: Couldn't determine which HOME folder to use via echo $HOME")
 
 # Set env path of brew installs
-BREW = ex("brew --prefix")
-if BREW is not None:
-    BREW = BREW.strip('\n')
-else:
-    raise Exception("ERROR 1003: Couldn't determine which BREW folder to use via brew --prefix")
+BREW = ""
+if IS_OSX:
+    BREW = ex("brew --prefix")
+    if BREW is not None:
+        BREW = BREW.strip('\n')
+    else:
+        raise Exception("ERROR 1003: Couldn't determine which BREW folder to use via brew --prefix")
 
 
 #--------------------------------------------------------------------------------------------------------------------------
@@ -145,9 +169,13 @@ else:
 #           BEGIN CONFIGURATION & INSTALLATION
 #
 #--------------------------------------------------------------------------------------------------------------------------
-# Update bREW
-print_cyan("Updating BREW before we start trying to install apps from it...")
-ex("brew update")
+# Update package manager
+if IS_OSX:
+    print_cyan("Updating BREW before we start trying to install apps from it...")
+    ex("brew update")
+else:
+    print_cyan("Updating APT before we start trying to install apps from it...")
+    ex("sudo apt update")
 
 
 #--------------------------------------------------------------------------------------------------------------------------
@@ -162,7 +190,7 @@ install(
 # Install Ag / silver searcher
 install(
             name =          'the_silver_searcher',
-            brew =          True
+            brew =          IS_OSX
         )
 
 #--------------------------------------------------------------------------------------------------------------------------
@@ -177,7 +205,7 @@ install(
 # Install NeoVim
 install(
             name =          'Neovim',
-            brew =          True
+            brew =          IS_OSX
         )
 
 #--------------------------------------------------------------------------------------------------------------------------
@@ -199,27 +227,29 @@ ex("pip3 install pynvim")
 #--------------------------------------------------------------------------------------------------------------------------
 # Install YouCompleteMe
 print_cyan("Installing YouCompleteMe...")
-install(
-            name =          'xcode-select',
-            install_cmd =   'xcode-select --install'
-        )
+
+if IS_OSX:
+    install(
+                name =          'xcode-select',
+                install_cmd =   'xcode-select --install'
+            )
 
 
 install(
             name =          'cmake',
-            brew =          True
+            brew =          IS_OSX
         )
 
 
 install(
             name =          'vim-nox',
-            brew =          True
+            brew =          IS_OSX
         )
 
 # install Python as part of YouCompleteMe
 install(
             name =          'pyenv',
-            brew =          True
+            brew =          IS_OSX
         )
 
 ex("pyenv install-latest")
@@ -228,22 +258,22 @@ ex('''echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init 
 
 install(
             name =          'mono',
-            brew =          True
+            brew =          IS_OSX
         )
 
 install(
             name =          'golang',
-            brew =          True
+            brew =          IS_OSX
         )
 
 install(
             name =          'nodejs',
-            brew =          True
+            brew =          IS_OSX
         )
 
 install(
             name =          'java',
-            brew =          True
+            brew =          IS_OSX
         )
 #ex("sudo ln -sfn /usr/local/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk")
 
@@ -263,7 +293,7 @@ print_green("YouCompleteMe has now been installed and configured.")
 # Install rust-analyzer
 install(
             name =          'rust-analyzer',
-            brew =          True
+            brew =          IS_OSX
         )
 
 #--------------------------------------------------------------------------------------------------------------------------
@@ -275,13 +305,20 @@ print_cyan("Installing ctags...")
 
 install(
             name =          'ctags',
-            brew =          True
+            brew =          IS_OSX
         )
 
-tmp = BREW + "/bin/ctags/"
-ex('alias ctags="' + BREW + '/bin/ctags/"')
-ex('alias ctags >> ~/' + SHELL)
-ex('ln -s ~/vimrc/.ctags ~/.ctags')
+tmp = ""
+if IS_OSX:
+    tmp = BREW + "/bin/ctags/"
+    ex('alias ctags="' + BREW + '/bin/ctags/"')
+    ex('alias ctags >> ~/' + SHELL)
+    ex('ln -s ~/vimrc/.ctags ~/.ctags')
+else:
+    tmp = "/usr/bin/ctags/"
+    ex('alias ctags="/usr/bin/ctags/"')
+    ex('alias ctags >> ~/' + SHELL)
+    ex('ln -s ~/vimrc/.ctags ~/.ctags')
 
 
 # All done
