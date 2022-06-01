@@ -36,7 +36,16 @@ def wch(name):
 def ex(cmd):
 #    os.system(cmd)
 #    os.popen(cmd)
-    return subprocess.run(cmd, shell=True, text=True, stdout=subprocess.PIPE).stdout
+#    command = cmd
+#    p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+#
+#    while True:
+#        output = p.stdout.readline()
+#        if output == '' and p.poll() is not None:
+#            break
+#        if output:
+#            yield output.strip()
+    return subprocess.run(cmd, shell=True, text=True, stdout=subprocess.PIPE, universal_newlines=True).stdout
 
 
 def print_cyan(text):
@@ -74,9 +83,10 @@ def contains_text(text, file):
             else:
                 return False
 
-
-def install(name, install_cmd=None, path=None, brew=False):
-    print_cyan("Installing dependency: " + name)
+def install(name, alt=None, install_cmd=None, path=None, osx=False, pkg=None):
+    named = lambda n, a: a if (a is not None) else n
+    cmd = named(name, alt)
+    print_cyan("Installing dependency: " + named(name, alt))
     print_cyan("Checking if " + name + " exists...")
 
     if path is not None:
@@ -93,34 +103,72 @@ def install(name, install_cmd=None, path=None, brew=False):
         if exists(path):
             print_green("You already have " + name + ", skipping...")
         else:
-            print_red(name + " is not installed on your system, installing...")
+            print_red(named(name, alt) + " is not installed on your system, installing...")
             ex(install_cmd)
 
     elif install_cmd is not None: # means need to use which() function instead of checking for install path
-        if wch(name):
+        print_red("Inside elif install_cmd")
+        if wch(cmd):
             print_green("You already have " + name + ", skipping...")
         else:
             print_red(name + " is not installed on your system, installing...")
             ex(install_cmd)
 
-    elif brew is True:
-        installed = bool(ex("if brew ls --versions '" + name  + "' > /dev/null; then echo 'True'; else echo 'False'; fi").strip('\n'))
+    elif osx is not False:
+        installed = bool(ex("if brew ls --versions '" + cmd + "' > /dev/null; then echo 'True'; else echo 'False'; fi").strip('\n'))
 
         if not installed:
-            print_red(name + " is not installed on your system, installing...")
-            ex('brew install ' + name)
+            if pkg is not None:
+                if 'brew' in pkg:
+                    print_red(name + " is not installed on your system, installing...")
+                    ex('brew install ' + named(cmd, pkg['brew']))
+                else:
+                    print_red(name + " is not installed on your system, installing...")
+                    ex('brew install ' + cmd)
+            else:
+                print_red(name + " is not installed on your system, installing...")
+                ex('brew install ' + cmd)
         else:
             print_green("You already have " + name + ", skipping...")
-    elif brew is False:
-        installed = bool(ex("if apt list '" + name  + "' > /dev/null; then echo 'True'; else echo 'False'; fi").strip('\n'))
+    elif osx is False:
+        which = wch(cmd)
+        check = ex("if hash " + cmd  + " 2>/dev/null; then echo 'True'; else echo 'False'; fi").strip('\n')
+        installed = which or (check == 'True')
+        #check = "if hash " + cmd  + " 2>/dev/null; then echo 'True'; else echo 'False'; fi"
+        #check = cmd + " -v foo >/dev/null 2>&1 || { echo >&2 'False'; }"
+        #res = ex(check).strip('\n')
+        #installed = False
+        #if res is not None:
+        #    if res == 'False':
+        #        installed = False
+        #    else:
+        #        installed = True
+        if pkg is not None:
+            if 'custom_check' in pkg:
+                command = pkg['custom_check']
+                result = ex(command).strip('\n')
+                installed = result == 'True'
+            elif 'apt' in pkg:
+                installed = ex("if sudo apt list --installed " + pkg['apt']  + " | grep installed >> /dev/null; then echo 'True'; else echo 'False'; fi").strip('\n') == 'True'
 
         if not installed:
-            print_red(name + " is not installed on your system, installing...")
-            ex('sudo apt install ' + name)
+            if pkg is not None:
+                if 'custom' in pkg:
+                    print_red(name + " is not installed on your system, installing...")
+                    ex(pkg['custom'])
+                elif 'apt' in pkg:
+                    print_red(name + " is not installed on your system, installing...")
+                    ex('sudo apt-get install ' + named(cmd, pkg['apt']))
+                else:
+                    print_red(name + " is not installed on your system, installing...")
+                    ex('sudo apt-get install ' + cmd)
+            else:
+                print_red(name + " is not installed on your system, installing...")
+                ex('sudo apt-get install ' + cmd)
         else:
             print_green("You already have " + name + ", skipping...")
     else:
-        raise Exception("ERROR 1000: install_cmd and path, or name and brew=True not set for " + name)
+        raise Exception("ERROR 1000: named(name, alt) is required with (one or both of install_cmd and/or path), or with (one of brew or apt)")
 
 
 
@@ -179,6 +227,29 @@ else:
 
 
 #--------------------------------------------------------------------------------------------------------------------------
+# Install snapd on Linux
+if not IS_OSX:
+    install(
+                name =          'snap',
+                pkg =           {
+                                    'apt':'snapd',
+                                }
+            )
+
+#--------------------------------------------------------------------------------------------------------------------------
+# Install vim-plug
+install(
+            name =          'vim-plug',
+            install_cmd =   "curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim",
+            path =          "~/.vim/autoload/plug.vim"
+        )
+#--------------------------------------------------------------------------------------------------------------------------
+# Install curl
+install(
+            name =          'curl',
+            osx =           IS_OSX
+        )
+
 # Install vim-plug
 install(
             name =          'vim-plug',
@@ -190,7 +261,11 @@ install(
 # Install Ag / silver searcher
 install(
             name =          'the_silver_searcher',
-            brew =          IS_OSX
+            alt =           'silversearcher-ag',
+            osx =           IS_OSX,
+            pkg =           {
+                                'apt': 'silversearcher-ag',
+                            }
         )
 
 #--------------------------------------------------------------------------------------------------------------------------
@@ -204,8 +279,13 @@ install(
 #--------------------------------------------------------------------------------------------------------------------------
 # Install NeoVim
 install(
-            name =          'Neovim',
-            brew =          IS_OSX
+            name =          'neovim',
+            alt =           'nvim',
+            osx =           IS_OSX,
+            pkg =           {
+                                'apt': 'neovim',
+                                'brew': 'neovim',
+                            }
         )
 
 #--------------------------------------------------------------------------------------------------------------------------
@@ -225,6 +305,16 @@ ex("pip3 install pynvim")
 
 
 #--------------------------------------------------------------------------------------------------------------------------
+# Install rust-analyzer
+install(
+            name =          'rust-analyzer',
+            osx =           IS_OSX,
+            pkg =           {
+                                'custom': 'sudo snap install rust-analyzer --beta',
+                            }
+        )
+
+#--------------------------------------------------------------------------------------------------------------------------
 # Install YouCompleteMe
 print_cyan("Installing YouCompleteMe...")
 
@@ -234,46 +324,86 @@ if IS_OSX:
                 install_cmd =   'xcode-select --install'
             )
 
-
 install(
             name =          'cmake',
-            brew =          IS_OSX
+            osx =           IS_OSX
         )
 
 
 install(
             name =          'vim-nox',
-            brew =          IS_OSX
+            alt =           'vim.nox',
+            osx =           IS_OSX
         )
 
-# install Python as part of YouCompleteMe
+if not IS_OSX:
+    install(
+                name =          'pip',
+                alt =           'pip3',
+                pkg =           {
+                                    'apt': 'python3-pip',
+                                }
+            )
+
 install(
             name =          'pyenv',
-            brew =          IS_OSX
+            osx =           IS_OSX,
+            pkg =           {
+                                'custom':  "sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev \
+                                            libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+                                            libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev && \
+                                            curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash && \
+                                            exec $SHELL"
+                            }
         )
 
 ex("pyenv install-latest")
-ex('''echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/''' + SHELL)
+#ex('''echo 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/''' + SHELL)
 
 
 install(
             name =          'mono',
-            brew =          IS_OSX
+            osx =           IS_OSX,
+            pkg =           {
+                                'custom': 'sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && sudo apt-add-repository "deb https://download.mono-project.com/repo/ubuntu stable-focal main" && sudo apt-get update && sudo apt install mono-complete',
+                            }
         )
 
 install(
             name =          'golang',
-            brew =          IS_OSX
+            alt =           'go',
+            osx =           IS_OSX,
+            pkg =           {
+                                'apt': 'golang',
+                                'brew': 'golang',
+                            }
         )
 
 install(
-            name =          'nodejs',
-            brew =          IS_OSX
+            name =          'nodejs version manager',
+            alt =           'nvm',
+            osx =           IS_OSX,
+            pkg =           {
+                                'custom': 'curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash',
+                                'custom_check': "if hash nvm_version >> /dev/null; then echo 'True'; else echo 'False'; fi",
+                            }
         )
+
+print_cyan("Configuring nvm to install latest NodeJS and NPM...")
+if IS_OSX:
+    ex("mkdir ~/.nvm")
+    ex('echo \"export NVM_DIR="$HOME/.nvm" \[ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && \. "$(brew --prefix)/opt/nvm/nvm.sh" # This loads nvm \[ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion\" >> ~/' + SHELL
+    )
+    ex('source ~/' + SHELL)
+    ex('nvm install lts')
+else:
+    ex('source ~/' + SHELL)
+    ex('nvm install lts')
+
 
 install(
             name =          'java',
-            brew =          IS_OSX
+            osx =           IS_OSX
         )
 #ex("sudo ln -sfn /usr/local/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk")
 
@@ -290,13 +420,6 @@ print_green("YouCompleteMe has now been installed and configured.")
 
 
 #--------------------------------------------------------------------------------------------------------------------------
-# Install rust-analyzer
-install(
-            name =          'rust-analyzer',
-            brew =          IS_OSX
-        )
-
-#--------------------------------------------------------------------------------------------------------------------------
 # Copy ctags info
 # Function definition: Move your cursor to some function instance and type CTRL + ] (CTRL + T to go back to code)
 # Function definition in split view: CTRL + W CTL + ]
@@ -305,7 +428,10 @@ print_cyan("Installing ctags...")
 
 install(
             name =          'ctags',
-            brew =          IS_OSX
+            osx =           IS_OSX,
+            pkg =           {
+                                'apt': "exuberant-ctags"
+                            }
         )
 
 tmp = ""
