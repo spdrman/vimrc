@@ -389,6 +389,17 @@ install(
                             }
         )
 
+
+ex("git install-latest")
+#ex('''echo 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/''' + SHELL)
+
+
+install(
+            name =          'git',
+            osx =           IS_OSX,
+        )
+
+
 print_cyan("Configuring nvm to install latest NodeJS and NPM...")
 if IS_OSX:
     ex("mkdir ~/.nvm")
